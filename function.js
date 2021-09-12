@@ -16,21 +16,10 @@ window.onload = init;
 function init() {
     canvas = document.getElementById('myCanvas');
     context = canvas.getContext('2d');
-    circle = new CircleNew(context, 250, 300, 100, -500 ,30)
-    square = new Square(context, 150, 200, -100, 500 )
+    circle = new CircleNew(context, 250, 300, 150, -150 ,30)
+    square = new Square(context, 150, 200, -150, 150 )
     window.requestAnimationFrame(gameLoop);
 }
-// function createCircle() {
-//     circleObjects = [
-//         new CircleNew(context, 250, 200, 10, 50 ,11),
-//         new CircleNew(context, 120, 150, 10, 60 ,7),
-//         new CircleNew(context, 170, 100, 20, 70 ,15),
-//         new CircleNew(context, 650, 50, 50, 50 ,20),
-//         new CircleNew(context, 250, 300, 10, -50 ,30),
-//         new CircleNew(context, 150, 0, 50, 50,10),
-//         new CircleNew(context, 250, 150, 50, 20,15) 
-//     ]
-// }
 function gameLoop(timeStamp) {
     secondsPassed = (timeStamp - oldTimeStamp) / 1000;
     oldTimeStamp = timeStamp;
@@ -65,9 +54,13 @@ function detectCollisions(){
     let dobjx1 = obj1.x + (Math.cos(radians) * obj1.radius);
     let dobjy1 = obj1.y + (Math.sin(radians) * obj1.radius);
 
-    if (obj1.x + obj1.radius > obj2.x && obj1.x + obj1.radius < obj2.x + squareWidth && obj1.y + obj1.radius > obj2.y && obj1.y + obj1.radius < obj2.y + squareWidth 
-        ) {
-        // obj2.vx = -Math.abs(obj2.vx) * restitution;
+    if ( obj1.y + obj1.radius > obj2.y  && obj1.y - obj1.radius < obj2.y +100 && obj1.x +obj1.radius > obj2.x && obj1.x- obj1.radius <obj2.x +100) {
+        // if (obj1.x < obj2.x + 100 && obj1.x > obj2.x) {
+        //     obj1.isColliding = true;
+        //     obj2.isColliding = true;
+        //     console.log("chạm ")
+        // }
+        
         let vCollision = {x: obj2.x - obj1.x, y: obj2.y - obj1.y};
         let distance = Math.sqrt((obj2.x-obj1.x)*(obj2.x-obj1.x) + (obj2.y-obj1.y)*(obj2.y-obj1.y));
         let vCollisionNorm = {x: vCollision.x / distance, y: vCollision.y / distance};
@@ -78,9 +71,12 @@ function detectCollisions(){
         obj2.vx += (speed * vCollisionNorm.x);
         obj2.vy += (speed * vCollisionNorm.y);
         obj1.isColliding = true;
-        obj2.isColliding = true;
+            obj2.isColliding = true;
+            console.log("chạm ")
+       
     }
-    if (dobjx1 > obj2.x && dobjy1 < obj2.y + squareWidth && dobjx1 < obj2.x +squareWidth && dobjy1 > obj2.y && dobjx1 <obj2.x +squareWidth && dobjy1 < obj2.y && dobjx1 >obj2.x && dobjy1 > obj2.y) {
+    
+    else if (dobjx1 > obj2.x && dobjy1 < obj2.y + squareWidth && dobjx1 < obj2.x +squareWidth && dobjy1 > obj2.y && dobjx1 <obj2.x +squareWidth && dobjy1 < obj2.y && dobjx1 >obj2.x && dobjy1 > obj2.y) {
         let vCollision = {x: obj2.x - obj1.x, y: obj2.y - obj1.y};
         let distance = Math.sqrt((obj2.x-obj1.x)*(obj2.x-obj1.x) + (obj2.y-obj1.y)*(obj2.y-obj1.y));
         let vCollisionNorm = {x: vCollision.x / distance, y: vCollision.y / distance};
@@ -93,6 +89,7 @@ function detectCollisions(){
         obj2.vy += (speed * vCollisionNorm.y);
         obj1.isColliding = true;
         obj2.isColliding = true;
+        console.log("chạm góc")
     }
 }
 function circleIntersect(x1, y1, r1, x2, y2, r2) {
@@ -139,7 +136,6 @@ function detectEdgeCollisions() {
 
         // Check for bottom and top
         if (obj2.y <0) {
-            console.log("ok");
             obj2.vy = Math.abs(obj2.vy) * restitution;
             
         }else if (obj2.y > canvasHeight - 100){

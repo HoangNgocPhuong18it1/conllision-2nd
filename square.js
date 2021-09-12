@@ -6,7 +6,7 @@ class Square extends GameObjectNew {
         this.context.beginPath();
         // this.context.fillRect(this.x, this.y, this.width, this.height);
         this.context.fillStyle = this.isColliding?'#ff8080':'#0099b0';
-        this.context.fillRect(this.x, this.y, 75, 75);
+        this.context.fillRect(this.x, this.y, 100, 100);
     }
     update(secondsPassed){
         // Move with set velocity
