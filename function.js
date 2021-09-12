@@ -22,8 +22,8 @@ function init() {
 }
 function createPolygons() {
     polygonsObjects = [
-        new Polygons(context, [new Coordinates(200, 100), new Coordinates(250, 150), new Coordinates(250, 50)] ,-100, 150 ),
-        new Polygons(context, [new Coordinates(150, 10), new Coordinates(250, 10), new Coordinates(250, 110), new Coordinates(150, 110),  new Coordinates(100, 55)] ,100, 150),
+        new Polygons(context, [new Coordinates(0, 100), new Coordinates(50, 150), new Coordinates(50, 50)] ,-100, 150 ),
+        new Polygons(context, [new Coordinates(350, 10), new Coordinates(450, 10), new Coordinates(450, 110), new Coordinates(350, 110),  new Coordinates(300, 55)] ,100, 150),
         new Polygons(context, [new Coordinates(150, 10), new Coordinates(250, 10),  new Coordinates(150, 110),  new Coordinates(100, 55)] ,300, -150)
     ]
 }
