@@ -1,11 +1,11 @@
 class GameObjectNew {
-    constructor (context, x, y, vx, vy, radius){
+    constructor (context, coordinates = new Coordinates(0, 0), vx, vy, radius){
         this.context = context;
-        this.x = x;
-        this.y = y;
+
         this.vx = vx;
         this.vy = vy;
-        this.radius = radius;
+        this.coordinates = coordinates;
         this.isColliding = false;
+        this.radius= radius;
     }
 }
