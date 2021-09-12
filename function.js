@@ -16,7 +16,7 @@ window.onload = init;
 function init() {
     canvas = document.getElementById('myCanvas');
     context = canvas.getContext('2d');
-    circle = new CircleNew(context, 250, 300, 150, -150 ,30)
+    circle = new CircleNew(context, 150, 300, 150, -150 ,30)
     square = new Square(context, 150, 200, -150, 150 )
     window.requestAnimationFrame(gameLoop);
 }
@@ -71,9 +71,9 @@ function detectCollisions(){
         obj2.vx += (speed * vCollisionNorm.x);
         obj2.vy += (speed * vCollisionNorm.y);
         obj1.isColliding = true;
-            obj2.isColliding = true;
-            console.log("chạm ")
-       
+        obj2.isColliding = true;
+        console.log("chạm ")
+    
     }
     
     else if (dobjx1 > obj2.x && dobjy1 < obj2.y + squareWidth && dobjx1 < obj2.x +squareWidth && dobjy1 > obj2.y && dobjx1 <obj2.x +squareWidth && dobjy1 < obj2.y && dobjx1 >obj2.x && dobjy1 > obj2.y) {
