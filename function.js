@@ -16,7 +16,7 @@ window.onload = init;
 function init() {
     canvas = document.getElementById('myCanvas');
     context = canvas.getContext('2d');
-    circle = new CircleNew(context, new Coordinates(150, 200), 40, -60 ,30);
+    circle = new CircleNew(context, new Coordinates(150, 200), 100, -60 ,30);
     createPolygons();
     window.requestAnimationFrame(gameLoop);
 }
@@ -40,7 +40,7 @@ function gameLoop(timeStamp) {
 
     detectEdgeCollisions();
     detectCollisionsPolygons();
-    // detectCollisions();
+    detectCollisions();
 
 
     circle.clearCanvas();
@@ -62,49 +62,124 @@ function detectCollisions(){
     let objPolygons;
    
     objCircle = circle;
-    objPolygons = square;
-
-    let radians = Math.atan2(objCircle.vy, objCircle.vx);
-    let dobjx1 = (Math.cos(radians) * objCircle.radius);
-    let dobjy1 = (Math.sin(radians) * objCircle.radius);
-
-    if ( objCircle.y + objCircle.radius > objPolygons.y  && objCircle.y - objCircle.radius < objPolygons.y +100 && objCircle.x +objCircle.radius > objPolygons.x && objCircle.x- objCircle.radius <objPolygons.x +100) {
-        // if (objCircle.x < objPolygons.x + 100 && objCircle.x > objPolygons.x) {
-        //     objCircle.isColliding = true;
-        //     objPolygons.isColliding = true;
-        //     console.log("chạm ")
-        // }
-        
-        // let vCollision = {x: objPolygons.x - objCircle.x, y: objPolygons.y - objCircle.y};
-        // let distance = Math.sqrt((objPolygons.x-objCircle.x)*(objPolygons.x-objCircle.x) + (objPolygons.y-objCircle.y)*(objPolygons.y-objCircle.y));
-        // let vCollisionNorm = {x: vCollision.x / distance, y: vCollision.y / distance};
-        // let vRelativeVelocity = {x: objCircle.vx - objPolygons.vx, y: objCircle.vy - objPolygons.vy};
-        // let speed = vRelativeVelocity.x * vCollisionNorm.x + vRelativeVelocity.y * vCollisionNorm.y;
-        // objCircle.vx -= (speed * vCollisionNorm.x);
-        // objCircle.vy -= (speed * vCollisionNorm.y);
-        // objPolygons.vx += (speed * vCollisionNorm.x);
-        // objPolygons.vy += (speed * vCollisionNorm.y);
-        objCircle.isColliding = true;
-        objPolygons.isColliding = true;
-        // console.log("chạm ")
     
-    }
-    if (dobjx1 + objCircle.x > objPolygons.x && objCircle.y - dobjy1 < objPolygons.y + squareWidth && objCircle.x - dobjx1 < objPolygons.x +squareWidth && objCircle.y - dobjy1 < objPolygons.y + 100 && objCircle.x - dobjx1 < objPolygons.x && objCircle.y + dobjy1 > objPolygons.y && objCircle.x + dobjx1 > objPolygons.x && objCircle.y +dobjy1 > objPolygons.y) {
-        // let vCollision = {x: objPolygons.x - objCircle.x, y: objPolygons.y - objCircle.y};
-        // let distance = Math.sqrt((objPolygons.x-objCircle.x)*(objPolygons.x-objCircle.x) + (objPolygons.y-objCircle.y)*(objPolygons.y-objCircle.y));
-        // let vCollisionNorm = {x: vCollision.x / distance, y: vCollision.y / distance};
-        // let vRelativeVelocity = {x: objCircle.vx - objPolygons.vx, y: objCircle.vy - objPolygons.vy};
-        // let speed = vRelativeVelocity.x * vCollisionNorm.x + vRelativeVelocity.y * vCollisionNorm.y;
-        
-        // objCircle.vx -= (speed * vCollisionNorm.x);
-        // objCircle.vy -= (speed * vCollisionNorm.y);
-        // objPolygons.vx += (speed * vCollisionNorm.x);
-        // objPolygons.vy += (speed * vCollisionNorm.y);
-        objCircle.isColliding = true;
-        objPolygons.isColliding = true;
-        console.log("chạm góc")
-    }
+    // let radians = Math.atan2(objCircle.vy, objCircle.vx);
+    // let dobjx1 = (Math.cos(radians) * objCircle.radius);
+    // let dobjy1 = (Math.sin(radians) * objCircle.radius);
 
+    let minDist = Number.MAX_VALUE;
+    let closestDelta = null;
+    let axis = null;
+
+    for (let i = 0; i < polygonsObjects.length; i++) {
+        objPolygons = polygonsObjects[i];
+            if (detectCollisionsCircle(objCircle, objPolygons)) {
+
+                objCircle.vx = - objCircle.vx
+                objCircle.vy = -objCircle.vy
+
+                objPolygons.vx =  -objPolygons.vx
+                objPolygons.vy = - objPolygons.vy
+                
+                objCircle.isColliding = true;
+                objPolygons.isColliding = true;
+                // console.log("chạm tròn")
+            }
+    }
+    // if ( objCircle.y + objCircle.radius > objPolygons.y  && objCircle.y - objCircle.radius < objPolygons.y +100 && objCircle.x +objCircle.radius > objPolygons.x && objCircle.x- objCircle.radius <objPolygons.x +100) {
+    //     // if (objCircle.x < objPolygons.x + 100 && objCircle.x > objPolygons.x) {
+    //     //     objCircle.isColliding = true;
+    //     //     objPolygons.isColliding = true;
+    //     //     console.log("chạm ")
+    //     // }
+        
+    //     // let vCollision = {x: objPolygons.x - objCircle.x, y: objPolygons.y - objCircle.y};
+    //     // let distance = Math.sqrt((objPolygons.x-objCircle.x)*(objPolygons.x-objCircle.x) + (objPolygons.y-objCircle.y)*(objPolygons.y-objCircle.y));
+    //     // let vCollisionNorm = {x: vCollision.x / distance, y: vCollision.y / distance};
+    //     // let vRelativeVelocity = {x: objCircle.vx - objPolygons.vx, y: objCircle.vy - objPolygons.vy};
+    //     // let speed = vRelativeVelocity.x * vCollisionNorm.x + vRelativeVelocity.y * vCollisionNorm.y;
+    //     // objCircle.vx -= (speed * vCollisionNorm.x);
+    //     // objCircle.vy -= (speed * vCollisionNorm.y);
+    //     // objPolygons.vx += (speed * vCollisionNorm.x);
+    //     // objPolygons.vy += (speed * vCollisionNorm.y);
+    //     objCircle.isColliding = true;
+    //     objPolygons.isColliding = true;
+    //     // console.log("chạm ")
+    
+    // }
+    // if (dobjx1 + objCircle.x > objPolygons.x && objCircle.y - dobjy1 < objPolygons.y + squareWidth && objCircle.x - dobjx1 < objPolygons.x +squareWidth && objCircle.y - dobjy1 < objPolygons.y + 100 && objCircle.x - dobjx1 < objPolygons.x && objCircle.y + dobjy1 > objPolygons.y && objCircle.x + dobjx1 > objPolygons.x && objCircle.y +dobjy1 > objPolygons.y) {
+    //     // let vCollision = {x: objPolygons.x - objCircle.x, y: objPolygons.y - objCircle.y};
+    //     // let distance = Math.sqrt((objPolygons.x-objCircle.x)*(objPolygons.x-objCircle.x) + (objPolygons.y-objCircle.y)*(objPolygons.y-objCircle.y));
+    //     // let vCollisionNorm = {x: vCollision.x / distance, y: vCollision.y / distance};
+    //     // let vRelativeVelocity = {x: objCircle.vx - objPolygons.vx, y: objCircle.vy - objPolygons.vy};
+    //     // let speed = vRelativeVelocity.x * vCollisionNorm.x + vRelativeVelocity.y * vCollisionNorm.y;
+        
+    //     // objCircle.vx -= (speed * vCollisionNorm.x);
+    //     // objCircle.vy -= (speed * vCollisionNorm.y);
+    //     // objPolygons.vx += (speed * vCollisionNorm.x);
+    //     // objPolygons.vy += (speed * vCollisionNorm.y);
+    //     objCircle.isColliding = true;
+    //     objPolygons.isColliding = true;
+    //     console.log("chạm góc")
+    // }
+}
+
+function detectCollisionsCircle(objCircle , objPolygons) {
+
+    let result = false;
+    let vector = new Coordinates(0, 0);
+    let vLength = 0;
+    let projectVector = new Coordinates(0, 0);
+    let projectPoint = new Coordinates(0, 0);
+    let edgeVector;
+    let dotTmp;
+    let eLength = 0;
+   
+
+        objPolygons.vtx.forEach( (vertex, index) => {
+        vector.x = objCircle.vtx.x - vertex.x;
+        vector.y = objCircle.vtx.y - vertex.y;
+
+        vLength = doLonVector(vector);
+        eLength = doLonVector(objPolygons.edge[index]);
+
+        if( vLength < objCircle.radius){
+            result = true;
+        }
+
+        edgeVector = objPolygons.edge[index]
+        dotTmp = vectorDotProduct(vector, edgeVector) / vectorDotProduct(edgeVector, edgeVector);                
+        projectVector.x = edgeVector.x*dotTmp;
+        projectVector.y = edgeVector.y*dotTmp;
+
+        projectPoint.x = projectVector.x + vertex.x;
+        projectPoint.y = projectVector.y + vertex.y;
+
+        if(doLonVector(projectPoint, objCircle.vtx) < objCircle.radius){
+            if(index <objPolygons.vtx.length - 1){
+                if(doLonVector(projectPoint, vertex) < eLength
+                    && doLonVector(projectPoint, objPolygons.vtx[index+1]) < eLength)
+                    result = true;
+            }
+            else{
+                if(doLonVector(projectPoint, vertex) < eLength
+                    && doLonVector(projectPoint, objPolygons.vtx[0]) < eLength)
+                    result = true;
+            }
+                
+        }
+        
+    });
+    return result;
+}
+function doLonVector(vertex1, vertex2 = null) {
+    if(vertex2 === null)
+        return Math.sqrt(vertex1.x**2+vertex1.y**2);
+    return Math.sqrt((vertex1.x-vertex2.x)**2 + (vertex1.y-vertex2.y)**2)
+
+}
+function vectorDotProduct(vertex1, vertex2) {
+    return  (vertex1.x * vertex2.x) + (vertex1.y * vertex2.y);
 }
 
 function detectCollisionsPolygons() {
