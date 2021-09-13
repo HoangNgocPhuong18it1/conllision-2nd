@@ -12,12 +12,15 @@ let movingSpeed = 50;
 let squareWidth = 100;
 const g = 9.81;
 const restitution = 1;
+
+let pointG;
 window.onload = init;
 function init() {
     canvas = document.getElementById('myCanvas');
     context = canvas.getContext('2d');
     circle = new CircleNew(context, new Coordinates(150, 200), 100, -60 ,30);
     createPolygons();
+    pointG = new Coordinates(0,0);
     window.requestAnimationFrame(gameLoop);
 }
 function createPolygons() {
@@ -30,10 +33,12 @@ function createPolygons() {
 function gameLoop(timeStamp) {
     secondsPassed = (timeStamp - oldTimeStamp) / 1000;
     oldTimeStamp = timeStamp;
-
+    
     // Loop over all game objects
     for (let i = 0; i < polygonsObjects.length; i++) {
-       polygonsObjects[i].update(secondsPassed);
+        pointG = findG(polygonsObjects[i].vtx);
+        
+        polygonsObjects[i].update(secondsPassed, pointG);
     }
 
     circle.update(secondsPassed);
@@ -70,9 +75,10 @@ function detectCollisions(){
     let minDist = Number.MAX_VALUE;
     let closestDelta = null;
     let axis = null;
-
+    let poidd= new Coordinates(0,0);
     for (let i = 0; i < polygonsObjects.length; i++) {
         objPolygons = polygonsObjects[i];
+            poidd= findG(objPolygons.vtx);
             if (detectCollisionsCircle(objCircle, objPolygons)) {
 
                 objCircle.vx = - objCircle.vx
@@ -81,47 +87,23 @@ function detectCollisions(){
                 objPolygons.vx =  -objPolygons.vx
                 objPolygons.vy = - objPolygons.vy
                 
+                // let vCollision = {x: poidd.x - objCircle.x, y: poidd.y - objCircle.y};
+                // let distance = Math.sqrt((poidd.x-objCircle.x)*(poidd.x-objCircle.x) + (poidd.y-objCircle.y)*(poidd.y-objCircle.y));
+                // let vCollisionNorm = {x: vCollision.x / distance, y: vCollision.y / distance};
+                // let vRelativeVelocity = {x: objCircle.vx - objPolygons.vx, y: objCircle.vy - objPolygons.vy};
+                // let speed = vRelativeVelocity.x * vCollisionNorm.x + vRelativeVelocity.y * vCollisionNorm.y;
+                // objCircle.vx -= (speed * vCollisionNorm.x);
+                // objCircle.vy -= (speed * vCollisionNorm.y);
+                // objPolygons.vx += (speed * vCollisionNorm.x);
+                // objPolygons.vy += (speed * vCollisionNorm.y);
+
                 objCircle.isColliding = true;
                 objPolygons.isColliding = true;
                 // console.log("chạm tròn")
             }
+            // console.log(poidd.x , " ||||", objPolygons.G.x )
     }
-    // if ( objCircle.y + objCircle.radius > objPolygons.y  && objCircle.y - objCircle.radius < objPolygons.y +100 && objCircle.x +objCircle.radius > objPolygons.x && objCircle.x- objCircle.radius <objPolygons.x +100) {
-    //     // if (objCircle.x < objPolygons.x + 100 && objCircle.x > objPolygons.x) {
-    //     //     objCircle.isColliding = true;
-    //     //     objPolygons.isColliding = true;
-    //     //     console.log("chạm ")
-    //     // }
-        
-    //     // let vCollision = {x: objPolygons.x - objCircle.x, y: objPolygons.y - objCircle.y};
-    //     // let distance = Math.sqrt((objPolygons.x-objCircle.x)*(objPolygons.x-objCircle.x) + (objPolygons.y-objCircle.y)*(objPolygons.y-objCircle.y));
-    //     // let vCollisionNorm = {x: vCollision.x / distance, y: vCollision.y / distance};
-    //     // let vRelativeVelocity = {x: objCircle.vx - objPolygons.vx, y: objCircle.vy - objPolygons.vy};
-    //     // let speed = vRelativeVelocity.x * vCollisionNorm.x + vRelativeVelocity.y * vCollisionNorm.y;
-    //     // objCircle.vx -= (speed * vCollisionNorm.x);
-    //     // objCircle.vy -= (speed * vCollisionNorm.y);
-    //     // objPolygons.vx += (speed * vCollisionNorm.x);
-    //     // objPolygons.vy += (speed * vCollisionNorm.y);
-    //     objCircle.isColliding = true;
-    //     objPolygons.isColliding = true;
-    //     // console.log("chạm ")
     
-    // }
-    // if (dobjx1 + objCircle.x > objPolygons.x && objCircle.y - dobjy1 < objPolygons.y + squareWidth && objCircle.x - dobjx1 < objPolygons.x +squareWidth && objCircle.y - dobjy1 < objPolygons.y + 100 && objCircle.x - dobjx1 < objPolygons.x && objCircle.y + dobjy1 > objPolygons.y && objCircle.x + dobjx1 > objPolygons.x && objCircle.y +dobjy1 > objPolygons.y) {
-    //     // let vCollision = {x: objPolygons.x - objCircle.x, y: objPolygons.y - objCircle.y};
-    //     // let distance = Math.sqrt((objPolygons.x-objCircle.x)*(objPolygons.x-objCircle.x) + (objPolygons.y-objCircle.y)*(objPolygons.y-objCircle.y));
-    //     // let vCollisionNorm = {x: vCollision.x / distance, y: vCollision.y / distance};
-    //     // let vRelativeVelocity = {x: objCircle.vx - objPolygons.vx, y: objCircle.vy - objPolygons.vy};
-    //     // let speed = vRelativeVelocity.x * vCollisionNorm.x + vRelativeVelocity.y * vCollisionNorm.y;
-        
-    //     // objCircle.vx -= (speed * vCollisionNorm.x);
-    //     // objCircle.vy -= (speed * vCollisionNorm.y);
-    //     // objPolygons.vx += (speed * vCollisionNorm.x);
-    //     // objPolygons.vy += (speed * vCollisionNorm.y);
-    //     objCircle.isColliding = true;
-    //     objPolygons.isColliding = true;
-    //     console.log("chạm góc")
-    // }
 }
 
 function detectCollisionsCircle(objCircle , objPolygons) {
@@ -410,4 +392,42 @@ function lineLine( x1, y1, x2, y2, x3, y3, x4, y4) {
         return true;
     }
     return false;
+}
+
+function findG(vertex){
+    let tongX =0 ;
+    let tongY =0;
+    let tong=0 ;
+    let tamX;
+    let tamY;
+    let tamS;
+    for (let i = 1; i < vertex.length-1; i++) {
+        tamX = xAG(vertex[0], vertex[i], vertex[i+1]);
+        tamY = yAG(vertex[0], vertex[i], vertex[i+1]);
+        tamS = sA(vertex[0], vertex[i], vertex[i+1]);
+        tongX += (tamX * tamS);
+        tongY += (tamY * tamS);
+        tong += tamS;
+      
+    }
+    let xG = tongX/tong;
+    let yG = tongY/tong;
+    pointG.x = xG;
+    pointG.y = yG;
+    
+    return pointG;
+}
+function xAG(vertexA, vertexB, vertexC) {
+    return (vertexA.x + vertexB.x +vertexC.x)/3;
+}
+function yAG(vertexA, vertexB, vertexC) {
+    return (vertexA.y + vertexB.y +vertexC.y)/3;
+}
+function sA(vertexA, vertexB, vertexC) {
+    let tam;
+    tam = (vertexA.x - vertexB.x) *(vertexA.y + vertexB.y) 
+    + (vertexB.x - vertexC.x) * (vertexB.y + vertexC.y) +
+    (vertexC.x - vertexA.x) * (vertexC.y + vertexA.y);
+
+    return Math.abs(tam)/2;
 }

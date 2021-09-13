@@ -10,6 +10,9 @@ class Polygons extends GameObjectNew {
         this.min = new Coordinates(0,0);
         this.max = new Coordinates(0,0);
         this.findMaxMin();
+        this.G = new Coordinates(0,0);
+        this.lineX = 0;
+        this.lineY = 0;
     }
     findMaxMin(){
         let minX = this.vtx[0].x;
@@ -40,6 +43,8 @@ class Polygons extends GameObjectNew {
         this.max.x = maxX;
         this.max.y = maxY;
     }
+    
+
     setEdge(){
         for (let i = 1; i < this.vtx.length; i++) {
             this.edge.push( new Coordinates(this.vtx[i].x -this.vtx[i-1].x, this.vtx[i].y -this.vtx[i-1].y ))
@@ -55,12 +60,25 @@ class Polygons extends GameObjectNew {
         }
         this.context.fillStyle = this.isColliding?'#ff8080':'#0099b0';
         this.context.fill();
+        context.beginPath();
+        context.moveTo(this.G.x, this.G.y);
+        context.lineTo(this.lineX, this.lineY );
+        context.stroke();
     }
-    update(secondsPassed){
+    update(secondsPassed, pointG){
         for (let key in this.vtx) {
             this.vtx[key].x += this.vx * secondsPassed;
             this.vtx[key].y += this.vy * secondsPassed;
         }
+
+        let radians = Math.atan2(this.vy, this.vx);
+        
+        
+
+        this.G.x = pointG.x;
+        this.G.y = pointG.y;
+        this.lineY = this.G.y + (Math.sin(radians) * 30);
+        this.lineX = this.G.x + (Math.cos(radians) * 30);
         this.findMaxMin();
         this.isColliding = false;
     }
