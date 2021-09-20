@@ -1,3 +1,4 @@
+import { GameObjectNew } from "./gameObject";
 class CircleNew extends GameObjectNew
 {   
     constructor (context, vtx, vx, vy,radius){
@@ -18,10 +19,10 @@ class CircleNew extends GameObjectNew
         this.context.arc(this.vtx.x, this.vtx.y, this.radius, 0, 2 * Math.PI);
         this.context.fill();
         // this.context.drawImage(img, this.x - this.radius*1.2, this.y - this.radius * 1.1, this.radius * 2.5, this.radius * 2.62);
-        context.beginPath();
-        context.moveTo(this.vtx.x, this.vtx.y);
-        context.lineTo(this.lineX,this.lineY);
-        context.stroke();
+        this.context.beginPath();
+        this.context.moveTo(this.vtx.x, this.vtx.y);
+        this.context.lineTo(this.lineX,this.lineY);
+        this.context.stroke();
     }
    
 
@@ -38,8 +39,10 @@ class CircleNew extends GameObjectNew
         this.lineY = this.vtx.y + (Math.sin(radians) * this.radius);
         this.lineX = this.vtx.x + (Math.cos(radians) * this.radius);
         this.isColliding = false;
+       
     }
     clearCanvas(){
-        this.context.clearRect(0, 0, canvas.width, canvas.height);
+        this.context.clearRect(0, 0, 500,  500);
     }
 }
+export {CircleNew};

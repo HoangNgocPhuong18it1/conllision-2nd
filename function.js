@@ -1,13 +1,26 @@
+
+import {CircleNew} from "./circle"
+import {Polygons} from "./polygons"
+import {Coordinates} from "./coordinates"
 let canvas ;
 const canvasWidth = 500;
 const canvasHeight = 500;
 let context;
 
+let circle;
+
 let polygonsObjects;
 
-let secondsPassed = 0;
-let oldTimeStamp = 0;
-let movingSpeed = 50;
+let lastFrameTimeMs =  0,  
+    maxFPS =  75 ; 
+var fps =  60 , 
+    framesThisSecond =  0 , 
+    lastFpsUpdate =  0 ; 
+
+    
+let timestep =  1/60 ; 
+let delta =0;
+
 
 let squareWidth = 100;
 const g = 9.81;
@@ -31,37 +44,69 @@ function createPolygons() {
     ]
 }
 function gameLoop(timeStamp) {
-    secondsPassed = (timeStamp - oldTimeStamp) / 1000;
-    oldTimeStamp = timeStamp;
-    
-    // Loop over all game objects
-    for (let i = 0; i < polygonsObjects.length; i++) {
-        pointG = findG(polygonsObjects[i].vtx);
-        
-        polygonsObjects[i].update(secondsPassed, pointG);
+    if (timeStamp < lastFrameTimeMs + (1000 / maxFPS)) {
+        requestAnimationFrame(gameLoop);
+        return;
     }
+    delta +=  (timeStamp - lastFrameTimeMs )/1000;  // note + = here 
+    lastFrameTimeMs = timeStamp ; 
+    // console.log(delta , timestep)
+    var numUpdateSteps = 0;
+    while( delta >= timestep )  {
+        for (let i = 0; i < polygonsObjects.length; i++) {
+            pointG = findG(polygonsObjects[i].vtx);
+            
+            polygonsObjects[i].update(timestep, pointG);
+        }
 
-    circle.update(secondsPassed);
+        circle.update(timestep);
+        delta -= timestep ; 
+        if (++numUpdateSteps >= 240) {
+            panic();
+            break;
+        }
+    }
+    if (timeStamp > lastFpsUpdate + 1000) { 
+        fps = 0.25 * framesThisSecond + (1 - 0.25) * fps; 
+ 
+        lastFpsUpdate = timeStamp;
+        framesThisSecond = 0;
+    }
+    framesThisSecond++; 
+    
+    
 
     detectEdgeCollisions();
     detectCollisionsPolygons();
     detectCollisions();
 
 
-    circle.clearCanvas();
-    for (let i = 0; i < polygonsObjects.length; i++) {
-        polygonsObjects[i].clearCanvas();
-     }
-   
+    // circle.clearCanvas();
+    // for (let i = 0; i < polygonsObjects.length; i++) {
+    //     polygonsObjects[i].clearCanvas();
+    //  }
+    context.clearRect(0, 0, 500,  500);
 
     circle.draw();
     for (let i = 0; i < polygonsObjects.length; i++) {
         polygonsObjects[i].draw();
      }
+    drawFps();
    
 
     window.requestAnimationFrame(gameLoop);
 }
+function panic() {
+    delta = 0;
+}
+function drawFps() {
+    context.beginPath();
+    context.font = "16px Arial";
+    context.fillStyle = "#0095DD";
+    context.fillText("FPS: " + Math.round(fps), 420, 20);
+    
+}
+
 function detectCollisions(){
     let objCircle;
     let objPolygons;

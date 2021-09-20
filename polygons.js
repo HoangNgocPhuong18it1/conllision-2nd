@@ -1,3 +1,5 @@
+import { GameObjectNew } from "./gameObject";
+import { Coordinates } from "./coordinates";
 class Polygons extends GameObjectNew {
     constructor(context, vtx= [] , vx, vy) {
         super();
@@ -60,10 +62,10 @@ class Polygons extends GameObjectNew {
         }
         this.context.fillStyle = this.isColliding?'#ff8080':'#0099b0';
         this.context.fill();
-        context.beginPath();
-        context.moveTo(this.G.x, this.G.y);
-        context.lineTo(this.lineX, this.lineY );
-        context.stroke();
+        this.context.beginPath();
+        this.context.moveTo(this.G.x, this.G.y);
+        this.context.lineTo(this.lineX, this.lineY );
+        this.context.stroke();
     }
     update(secondsPassed, pointG){
         for (let key in this.vtx) {
@@ -83,6 +85,7 @@ class Polygons extends GameObjectNew {
         this.isColliding = false;
     }
     clearCanvas(){
-        this.context.clearRect(0, 0, canvas.width, canvas.height);
+        this.context.clearRect(0, 0, 500, 500);
     }
 }
+export {Polygons}

@@ -1,3 +1,4 @@
+import { Coordinates } from "./coordinates";
 class GameObjectNew {
     constructor (context, coordinates = new Coordinates(0, 0), vx, vy, radius){
         this.context = context;
@@ -9,3 +10,4 @@ class GameObjectNew {
         this.radius= radius;
     }
 }
+export {GameObjectNew};

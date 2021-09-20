@@ -6,3 +6,4 @@ class Coordinates{
     }
     
 }
+export {Coordinates};
